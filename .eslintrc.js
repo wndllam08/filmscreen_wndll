@@ -37,6 +37,7 @@ module.exports = {
     'react/jsx-props-no-spreading': 0,
     'no-sparse-arrays': 0,
     'no-array-index-key': 0,
+    'react/function-component-definition': 0,
     camelcase: 0,
   },
 };

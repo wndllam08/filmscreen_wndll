@@ -2,7 +2,7 @@ import React from 'react';
 import { Divider, List, ListItem, ListItemText, ListSubheader, ListItemButton, Link, CircularProgress, Box, ListItemIcon } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { Link as RouterLink } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import logoBlue from '../utils/images/logoBlue.png';
 import logoRed from '../utils/images/logoRed.png';
 import { useGetGenresQuery } from '../../services/TMDB';
@@ -18,7 +18,7 @@ const SideBar = () => {
   const theme = useTheme();
   const { data, isLoading } = useGetGenresQuery();
   const dispatch = useDispatch();
-  const { genreIdOrCategoryName } = useSelector((state) => state.currentGenreOrCategory);
+  // const { genreIdOrCategoryName } = useSelector((state) => state.currentGenreOrCategory);
 
   return (
     <div>

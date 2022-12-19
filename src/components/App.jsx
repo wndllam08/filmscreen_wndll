@@ -1,58 +1,22 @@
 import React from 'react';
-import { CssBaseline } from '@mui/material';
+import { CssBaseline, Box } from '@mui/material';
 import { Routes, Route } from 'react-router-dom';
-import styles from './styles';
 import { Actors, MovieInformation, Movies, NavBar, Profile } from '.';
 
-const App = () => {
-  const { classes } = styles();
-  console.log('app');
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <NavBar />
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        <Routes>
-          <Route
-            exact
-            path="/movie/:id"
-            element={
-              <MovieInformation />
-        }
-          />
-        </Routes>
-        <Routes>
-          <Route
-            exact
-            path="/actors/:id"
-            element={
-              <Actors />
-        }
-          />
-        </Routes>
-        <Routes>
-          <Route
-            exact
-            path="/"
-            element={
-              <Movies />
-        }
-          />
-        </Routes>
-        <Routes>
-          <Route
-            exact
-            path="/profile/:id"
-            element={
-              <Profile />
-        }
-          />
-        </Routes>
-      </main>
-
-    </div>
-  );
-};
+const App = () => (
+  <Box sx={{ display: 'flex', height: '100%' }}>
+    <CssBaseline />
+    <NavBar />
+    <main style={{ flexGrow: '1', padding: '2em' }}>
+      <Box sx={{ height: '70px' }} />
+      <Routes>
+        <Route exact path="/movie/:id" element={<MovieInformation />} />
+        <Route exact path="/actors/:id " element={<Actors />} />
+        <Route exact path="/" element={<Movies />} />
+        <Route exact path="/profile/:id" element={<Profile />} />
+      </Routes>
+    </main>
+  </Box>
+);
 
 export default App;

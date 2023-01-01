@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { TextField, InputAdornment, Box } from '@mui/material';
+import React, { useState } from 'react';
+import { InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+// import { useLocation } from 'react-router-dom';
 import { Container, CssTextField } from './styles';
 import { searchMovie } from '../../features/currentGenreOrCategory';
 

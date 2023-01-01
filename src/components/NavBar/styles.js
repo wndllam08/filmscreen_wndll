@@ -27,11 +27,11 @@ export const Nav = styled('nav')(({ theme }) => ({
   },
 }));
 
-export const DrawerPaper = styled(Drawer)(({ theme }) => ({
+export const DrawerPaper = styled(Drawer)(() => ({
   width: '240px',
 }));
 
-export const LinkBtn = styled(Button)(({ theme }) => ({
+export const LinkBtn = styled(Button)(() => ({
   '&:hover': {
     color: 'white !important',
     textDecoration: 'none',

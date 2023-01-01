@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Divider, List, ListItemText, ListSubheader, ListItemIcon, ListItemButton, Box, CircularProgress, useTheme } from '@mui/material';
-import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { GenreImg, LinkContainer, StyledLink } from './styles';
 import { useGetGenresQuery } from '../../services/TMDB';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CssBaseline, Box } from '@mui/material';
+import { CssBaseline } from '@mui/material';
 import { Routes, Route } from 'react-router-dom';
 import { Actors, MovieInformation, Movies, NavBar, Profile } from '.';
 import { Content, Main, StyledToolbar } from './styles';

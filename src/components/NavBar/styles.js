@@ -1,40 +1,39 @@
-const drawerWidth = 240;
+import { Button, Drawer, IconButton, styled, Toolbar } from '@mui/material';
 
-export const toolbar = ((theme) => ({
+export const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   height: '80px',
   display: 'flex',
   justifyContent: 'space-between',
   marginLeft: '240px',
   [theme.breakpoints.down('sm')]: {
-    marginLeft: '0',
+    marginLeft: 0,
     flexWrap: 'wrap',
-    height: '120px',
   },
 }));
 
-export const menuButton = ((theme) => ({
-
+export const IconBtn = styled(IconButton)(({ theme }) => ({
+  color: 'inherit',
+  outline: 'none',
+  marginRight: theme.spacing(2),
   [theme.breakpoints.up('sm')]: {
     display: 'none',
   },
-  outline: 'none',
-
 }));
 
-export const drawer = ((theme) => ({
+export const Nav = styled('nav')(({ theme }) => ({
   [theme.breakpoints.up('sm')]: {
-    width: drawerWidth,
+    width: '240px',
     flexShrink: 0,
   },
 }));
 
-export const drawerPaper = {
-  width: drawerWidth,
-};
+export const DrawerPaper = styled(Drawer)(({ theme }) => ({
+  width: '240px',
+}));
 
-export const linkButton = {
+export const LinkBtn = styled(Button)(({ theme }) => ({
   '&:hover': {
     color: 'white !important',
     textDecoration: 'none',
   },
-};
+}));

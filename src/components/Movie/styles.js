@@ -1,19 +1,28 @@
-import { useTheme } from '@mui/material/styles';
+import { styled, Typography } from '@mui/material';
 
-export const movieStyles = {
+export const Title = styled(Typography)(({ theme }) => ({
+  color: theme.palette.text.primary,
+  textOverflow: 'ellipsis',
+  width: '230px',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  marginTop: '10px',
+  marginBottom: 0,
+  textAlign: 'center',
+}));
+
+export const Links = styled('div')(({ theme }) => ({
   alignItems: 'center',
   fontWeight: 'bolder',
-  textDecoration: 'none',
-  display: 'flex',
-  flexDirection: 'column',
-  '&:hover': {
-    cursor: 'pointer',
-
+  cursor: 'pointer',
+  [theme.breakpoints.up('xs')]: {
+    display: 'flex',
+    flexDirection: 'column',
   },
-};
+}));
 
-export const imgStyles = {
-  borderRadius: '20px',
+export const Img = styled('img')(() => ({
+  borderRadius: '10px',
   height: '300px',
   marginBottom: '10px',
   transition: 'transform 0.2s',
@@ -21,18 +30,4 @@ export const imgStyles = {
   ':hover': {
     transform: 'scale(1.05)',
   },
-};
-
-export const typographyStyles = () => {
-  const theme = useTheme();
-  return {
-    color: theme.palette.text.primary,
-    textOverflow: 'ellipsis',
-    width: '230px',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    marginTop: '10px',
-    marginBottom: 0,
-    textAlign: 'center',
-  };
-};
+}));

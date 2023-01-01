@@ -1,18 +1,37 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
+import { TextField, InputAdornment, Box } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import { Search, SearchIconWrapper, StyledInputBase } from './styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { Container, CssTextField } from './styles';
+import { searchMovie } from '../../features/currentGenreOrCategory';
 
-const SearchBar = () => (
-  <Search>
-    <SearchIconWrapper>
-      <SearchIcon />
-    </SearchIconWrapper>
-    <StyledInputBase
-      placeholder="Search…"
-      inputProps={{ 'aria-label': 'search' }}
-    />
-  </Search>
+const SearchBar = () => {
+  const [query, setQuery] = useState('');
+  const dispatch = useDispatch();
 
-);
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      dispatch(searchMovie(query));
+    }
+  };
+  return (
+    <Container>
+      <CssTextField
+        onKeyPress={handleKeyPress}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        variant="standard"
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+      />
+    </Container>
+  );
+};
 
 export default SearchBar;

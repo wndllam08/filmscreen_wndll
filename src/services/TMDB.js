@@ -12,16 +12,31 @@ export const tmdbApi = createApi({
     }),
 
     getMovies: builder.query({
-      query: ({ genreIdOrCategoryName, page }) => {
-        if (genreIdOrCategoryName && typeof genreIdOrCategoryName === 'string') {
-          return `/movie/${genreIdOrCategoryName}?page=${page}&api_key=${tmdbApiKey}`;
+      query: ({ genreIdOrCategoryName, page, searchQuery }) => {
+        //* Get Movies By Search
+        if (
+          searchQuery
+        ) {
+          return `search/movie?query=${searchQuery}&page=${page}&api_key=${tmdbApiKey}`;
+        }
+        //* Get Movies By Category
+        if (
+          genreIdOrCategoryName
+          && typeof genreIdOrCategoryName === 'string'
+        ) {
+          return `movie/${genreIdOrCategoryName}?page=${page}&api_key=${tmdbApiKey}`;
         }
 
-        if (genreIdOrCategoryName && typeof genreIdOrCategoryName === 'number') {
+        //* Get Movies By Genre
+        if (
+          genreIdOrCategoryName
+          && typeof genreIdOrCategoryName === 'number'
+        ) {
+          //* https://*api.themoviedb.org/3/discover/movie?with_genres28&page=1&api_key=b5029362c167bd0fffbc0dd23303df64
           return `discover/movie?with_genres=${genreIdOrCategoryName}&page=${page}&api_key=${tmdbApiKey}`;
         }
-
-        return `/movie/popular?page=${page}&api_key=${tmdbApiKey}`;
+        //* Get Popular Movies
+        return `movie/popular?page=${page}&api_key=${tmdbApiKey}`;
       },
     }),
   }),

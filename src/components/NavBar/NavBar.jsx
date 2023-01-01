@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { AppBar, IconButton, Toolbar, Drawer, Button, Avatar, useMediaQuery, Box } from '@mui/material';
+import { AppBar, IconButton, Drawer, Button, Avatar, useMediaQuery } from '@mui/material';
 import { Menu, AccountCircle, Brightness4, Brightness7 } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
-import * as styles from './styles';
 import { SideBar, SearchBar } from '..';
+import { DrawerPaper, IconBtn, LinkBtn, Nav, StyledToolbar } from './styles';
 
 const NavBar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -15,16 +15,15 @@ const NavBar = () => {
   return (
     <>
       <AppBar position="fixed">
-        <Toolbar sx={styles.toolbar}>
+        <StyledToolbar>
           {isMobile && (
-          <IconButton
+          <IconBtn
             color="inherit"
             edge="start"
             onClick={() => setMobileOpen((prevMobileOpen) => !prevMobileOpen)}
-            sx={styles.menuButton}
           >
             <Menu />
-          </IconButton>
+          </IconBtn>
           )}
 
           <IconButton
@@ -44,41 +43,43 @@ const NavBar = () => {
                 Log in &nbsp; <AccountCircle />
               </Button>
             ) : (
-              <Button
+              <LinkBtn
                 color="inherit"
                 component={Link}
                 to="/profile/:id"
                 onClick={() => {}}
-                sx={styles.linkButton}
               >
                 {!isMobile && <><p style={{ whiteSpace: 'nowrap' }}> My Movies</p> &nbsp;</>}
-                <Avatar sx={{ width: '30px', height: '30px' }} alt="Profile" src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png" />
-              </Button>
+                <Avatar
+                  sx={{ width: '30px', height: '30px' }}
+                  alt="Profile"
+                  src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png"
+                />
+              </LinkBtn>
             )}
           </div>
           {isMobile && <SearchBar />}
-        </Toolbar>
+        </StyledToolbar>
       </AppBar>
-      <Box>
-        <Box sx={styles.drawer}>
+      <div>
+        <Nav>
           {isMobile ? (
-            <Drawer
+            <DrawerPaper
               variant="temporary"
               anchor="right"
               open={mobileOpen}
               onClose={() => setMobileOpen((prevMobileOpen) => !prevMobileOpen)}
-              classes={{ paper: styles.drawerPaper }}
               ModalProps={{ keepMounted: true }}
             >
               <SideBar setMobileOpen={setMobileOpen} />
-            </Drawer>
+            </DrawerPaper>
           ) : (
-            <Drawer classes={{ paper: styles.drawerPaper }} variant="permanent" open>
+            <Drawer variant="permanent" open>
               <SideBar setMobileOpen={setMobileOpen} />
             </Drawer>
           )}
-        </Box>
-      </Box>
+        </Nav>
+      </div>
     </>
   );
 };

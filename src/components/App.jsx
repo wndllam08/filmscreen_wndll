@@ -2,21 +2,22 @@ import React from 'react';
 import { CssBaseline, Box } from '@mui/material';
 import { Routes, Route } from 'react-router-dom';
 import { Actors, MovieInformation, Movies, NavBar, Profile } from '.';
+import { Content, Main, StyledToolbar } from './styles';
 
 const App = () => (
-  <Box sx={{ display: 'flex', height: '100%' }}>
+  <Main>
     <CssBaseline />
     <NavBar />
-    <main style={{ flexGrow: '1', padding: '2em' }}>
-      <Box sx={{ height: '70px' }} />
+    <Content>
+      <StyledToolbar />
       <Routes>
         <Route exact path="/movie/:id" element={<MovieInformation />} />
         <Route exact path="/actors/:id " element={<Actors />} />
         <Route exact path="/" element={<Movies />} />
         <Route exact path="/profile/:id" element={<Profile />} />
       </Routes>
-    </main>
-  </Box>
+    </Content>
+  </Main>
 );
 
 export default App;

@@ -1,14 +1,11 @@
-import { useTheme } from '@mui/material/styles';
+import { Grid, styled } from '@mui/material';
 
-export const root = () => {
-  const theme = useTheme();
-  return {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    overflow: 'auto',
-    [theme.breakpoints.down('sm')]: {
-      justifyContent: 'center',
-    },
-  };
-};
+export const MoviesContainer = styled(Grid)(({ theme }) => ({
+  display: 'flex',
+  flexWrap: 'wrap',
+  justifyContent: 'space-between',
+  overflow: 'auto',
+  [theme.breakpoints.down('sm')]: {
+    justifyContent: 'center',
+  },
+}));

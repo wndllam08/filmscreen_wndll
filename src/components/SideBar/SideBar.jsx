@@ -1,13 +1,13 @@
 import React from 'react';
 import { Divider, List, ListItemText, ListSubheader, ListItemIcon, ListItemButton, Box, CircularProgress, useTheme } from '@mui/material';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { GenreImg, LinkContainer, StyledLink } from './styles';
 import { useGetGenresQuery } from '../../services/TMDB';
 import { selectGenreOrCategory } from '../../features/currentGenreOrCategory';
 import genreIcons from '../../assets/genres';
-
-import logoBlue from '../utils/images/logoBlue.png';
-import logoRed from '../utils/images/logoRed.png';
+import logoBlue from '../../assets/images/logoBlue.png';
+import logoRed from '../../assets/images/logoRed.png';
 
 const categories = [
   { label: 'Popular', value: 'popular' },
@@ -19,13 +19,11 @@ const SideBar = () => {
   const theme = useTheme();
   const { data, isLoading, error } = useGetGenresQuery();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   // const { genreIdOrCategoryName } = useSelector((state) => state.currentGenreOrCategory);
   return (
     <>
-      <LinkContainer
-        to="/"
-
-      >
+      <LinkContainer onClick={() => navigate('/')} sx={{ cursor: 'pointer' }}>
         <img
           style={{ width: '240px',
             objectFit: 'contain' }}
@@ -38,7 +36,7 @@ const SideBar = () => {
         <ListSubheader>Categories</ListSubheader>
         {categories.map(({ label, value }) => (
           <StyledLink key={value}>
-            <ListItemButton onClick={() => dispatch(selectGenreOrCategory(value))}>
+            <ListItemButton to="/" onClick={() => dispatch(selectGenreOrCategory(value))}>
               <ListItemIcon>
                 <GenreImg src={genreIcons[label.toLowerCase()]} />
               </ListItemIcon>
@@ -54,13 +52,13 @@ const SideBar = () => {
         <>Oh no, there was an error</>
       ) : isLoading ? (
         <Box display="flex" justifyContent="center">
-          <CircularProgress size="4rem" />
+          <CircularProgress size="8rem" />
         </Box>
       ) : data ? (
         <List>
           {data?.genres?.map(({ name, id }) => (
             <StyledLink key={id}>
-              <ListItemButton onClick={() => dispatch(selectGenreOrCategory(id))}>
+              <ListItemButton to="/" onClick={() => dispatch(selectGenreOrCategory(id))}>
                 <ListItemIcon>
                   <GenreImg src={genreIcons[name.toLowerCase()]} />
                 </ListItemIcon>

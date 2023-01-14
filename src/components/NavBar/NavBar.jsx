@@ -1,16 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppBar, IconButton, Drawer, Button, Avatar, useMediaQuery } from '@mui/material';
 import { Menu, AccountCircle, Brightness4, Brightness7 } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser, userSelector } from '../../features/auth';
+
 import { SideBar, SearchBar } from '..';
 import { DrawerPaper, IconBtn, LinkBtn, Nav, StyledToolbar } from './styles';
+import { fetchToken, createSessionId, moviesApi } from '../utils';
 
 const NavBar = () => {
+  const { isAuthenticated, user } = useSelector(userSelector);
   const [mobileOpen, setMobileOpen] = useState(false);
   const isMobile = useMediaQuery('(max-width:600px)');
   const theme = useTheme();
-  const isAuthenticated = true;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem('request_token');
+  const sessionIdLS = localStorage.getItem('session_id');
+
+  useEffect(() => {
+    const logInUser = async () => {
+      if (token) {
+        if (sessionIdLS) {
+          const { data: userData } = await moviesApi.get(`/account?session_id=${sessionIdLS}`);
+          dispatch(setUser(userData));
+        } else {
+          const sessionId = await createSessionId();
+          const { data: userData } = await moviesApi.get(`/account?session_id=${sessionId}`);
+          dispatch(setUser(userData));
+        }
+      }
+    };
+
+    logInUser();
+  }, [token]);
 
   return (
     <>
@@ -20,7 +46,7 @@ const NavBar = () => {
           <IconBtn
             color="inherit"
             edge="start"
-            onClick={() => setMobileOpen((prevMobileOpen) => !prevMobileOpen)}
+            onClick={() => setMobileOpen((prevState) => !prevState)}
           >
             <Menu />
           </IconBtn>
@@ -36,24 +62,19 @@ const NavBar = () => {
           {!isMobile && <SearchBar />}
           <div>
             {!isAuthenticated ? (
-              <Button
-                color="inherit"
-                onClick={() => {}}
-              >
+              <Button color="inherit" onClick={fetchToken}>
                 Log in &nbsp; <AccountCircle />
               </Button>
             ) : (
               <LinkBtn
                 color="inherit"
-                component={Link}
-                to="/profile/:id"
-                onClick={() => {}}
+                onClick={() => navigate(`/profile/${user.id}`)}
               >
                 {!isMobile && <><p style={{ whiteSpace: 'nowrap' }}> My Movies</p> &nbsp;</>}
                 <Avatar
                   sx={{ width: '30px', height: '30px' }}
                   alt="Profile"
-                  src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png"
+                  src={`https://www.themoviedb.org/t/p/w64_and_h64_face${user?.avatar?.tmdb?.avatar_path}`}
                 />
               </LinkBtn>
             )}

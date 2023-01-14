@@ -16,7 +16,7 @@ const Movies = () => {
       ) : isFetching ? (
 
         <Box display="flex" justifyContent="center">
-          <CircularProgress size="4rem" />
+          <CircularProgress size="8rem" />
         </Box>
 
       ) : data ? (

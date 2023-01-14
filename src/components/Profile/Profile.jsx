@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Button, Typography } from '@mui/material';
-import { ExitToApp, Favorite } from '@mui/icons-material';
+import { ExitToApp } from '@mui/icons-material';
 import { userSelector } from '../../features/auth';
 
 const Profile = () => {

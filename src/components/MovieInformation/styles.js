@@ -1,4 +1,4 @@
-import { Box, Grid, styled, Modal } from '@mui/material';
+import { Box, Grid, styled } from '@mui/material';
 
 export const GridContainer = styled(Grid)(({ theme }) => ({
   display: 'flex',

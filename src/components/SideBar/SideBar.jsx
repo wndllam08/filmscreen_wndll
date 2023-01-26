@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Divider, List, ListItemText, ListSubheader, ListItemIcon, ListItemButton, Box, CircularProgress, useTheme } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { GenreImg, LinkContainer, StyledLink } from './styles';
 import { useGetGenresQuery } from '../../services/TMDB';
@@ -15,12 +15,22 @@ const categories = [
   { label: 'Upcoming', value: 'upcoming' },
 ];
 
-const SideBar = () => {
+const SideBar = ({ setMobileOpen }) => {
   const theme = useTheme();
   const { data, isLoading, error } = useGetGenresQuery();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const { genreIdOrCategoryName } = useSelector((state) => state.currentGenreOrCategory);
+  const { genreIdOrCategoryName } = useSelector((state) => state.currentGenreOrCategory);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [genreIdOrCategoryName, setMobileOpen]);
+
+  const clickHandler = (label, id) => {
+    navigate('/');
+    dispatch(selectGenreOrCategory(id));
+  };
+
   return (
     <>
       <LinkContainer onClick={() => navigate('/')} sx={{ cursor: 'pointer' }}>
@@ -28,15 +38,15 @@ const SideBar = () => {
           style={{ width: '240px',
             objectFit: 'contain' }}
           src={theme.palette.mode === 'light' ? logoBlue : logoRed}
-          alt="Filmpire Logo"
+          alt="Filmscreen Logo"
         />
       </LinkContainer>
       <Divider />
       <List>
         <ListSubheader>Categories</ListSubheader>
         {categories.map(({ label, value }) => (
-          <StyledLink key={value}>
-            <ListItemButton to="/" onClick={() => dispatch(selectGenreOrCategory(value))}>
+          <StyledLink onClick={() => clickHandler(label, value)} key={value}>
+            <ListItemButton>
               <ListItemIcon>
                 <GenreImg src={genreIcons[label.toLowerCase()]} />
               </ListItemIcon>
@@ -57,10 +67,11 @@ const SideBar = () => {
       ) : data ? (
         <List>
           {data?.genres?.map(({ name, id }) => (
-            <StyledLink key={id}>
-              <ListItemButton to="/" onClick={() => dispatch(selectGenreOrCategory(id))}>
+            <StyledLink onClick={() => clickHandler(name, id)} key={name}>
+              <ListItemButton>
                 <ListItemIcon>
                   <GenreImg src={genreIcons[name.toLowerCase()]} />
+
                 </ListItemIcon>
                 <ListItemText primary={name} />
               </ListItemButton>

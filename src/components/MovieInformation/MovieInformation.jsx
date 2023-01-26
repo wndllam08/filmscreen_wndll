@@ -1,33 +1,80 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography, Button, ButtonGroup, Grid, Box, CircularProgress, Rating } from '@mui/material';
 import { Movie as MovieIcon, Theaters, Language, PlusOne, Favorite, FavoriteBorderOutlined, Remove, ArrowBack } from '@mui/icons-material';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 import { selectGenreOrCategory } from '../../features/currentGenreOrCategory';
 import genreIcons from '../../assets/genres';
-import { useGetMovieQuery, useGetRecommendationsQuery } from '../../services/TMDB';
-import { GridContainer, Poster, GenresContainer, Links, GenreImg, CharImg, BtnsContainer } from './styles';
+import { useGetMovieQuery, useGetRecommendationsQuery, useGetListQuery } from '../../services/TMDB';
+import { GridContainer, Poster, GenresContainer, Links, GenreImg, CharImg, BtnsContainer, StyledModal, VideoIframe } from './styles';
 import { MovieList } from '..';
+import { userSelector } from '../../features/auth';
 
 const MovieInformation = () => {
+  const { user } = useSelector(userSelector);
   const { id } = useParams();
-  const { data, isFetching, error } = useGetMovieQuery(id);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
-  const { data: recommendations } = useGetRecommendationsQuery({ list: '/recommendations', movie_id: id });
+  const { data, isFetching, error } = useGetMovieQuery(id);
+  const { data: favoriteMovies } = useGetListQuery({
+    listName: 'favorite/movies',
+    accountId: user.id,
+    sessionId: localStorage.getItem('session_id'),
+    page: 1 });
+  const { data: watchlistMovies } = useGetListQuery({
+    listName: 'watchlist/movies',
+    accountId: user.id,
+    sessionId:
+    localStorage.getItem('session_id'),
+    page: 1 });
 
-  const isMovieFav = true;
-  const isMovieWatch = false;
+  const { data: recommendations, isFetching: isRecommendationsFetching } = useGetRecommendationsQuery({ list: '/recommendations', movie_id: id });
+  const [isMovieFavorited, setIsMovieFavorited] = useState(false);
+  const [isMovieWatchListed, setIsMovieWatchlisted] = useState(false);
 
-  const addToFavorites = () => {
+  useEffect(() => {
+    setIsMovieFavorited(
+      !!favoriteMovies?.results?.find((movie) => movie?.id === data?.id),
+    );
+  }, [favoriteMovies, data]);
 
+  useEffect(() => {
+    setIsMovieWatchlisted(
+      !!watchlistMovies?.results?.find((movie) => movie?.id === data?.id),
+    );
+  }, [watchlistMovies, data]);
+
+  const addToFavorites = async () => {
+    await axios.post(
+      `https://api.themoviedb.org/3/account/${user.id}/favorite?api_key=${process.env.REACT_APP_TMDB_KEY
+      }&session_id=${localStorage.getItem('session_id')}`,
+      {
+        media_type: 'movie',
+        media_id: id,
+        favorite: !isMovieFavorited,
+      },
+
+    );
+    setIsMovieFavorited((prev) => !prev);
   };
-  const addToWatchlist = () => {
 
+  const addToWatchlist = async () => {
+    await axios.post(
+      `https://api.themoviedb.org/3/account/${user.id}/watchlist?api_key=${process.env.REACT_APP_TMDB_KEY
+      }&session_id=${localStorage.getItem('session_id')}`,
+      {
+        media_type: 'movie',
+        media_id: id,
+        watchlist: !isMovieWatchListed,
+      },
+    );
+
+    setIsMovieWatchlisted((prev) => !prev);
   };
 
-  console.log(recommendations);
   return (
     <div>
       {error ? (
@@ -126,19 +173,23 @@ const MovieInformation = () => {
                   <ButtonGroup size="medium" variant="outlined">
                     <Button target="blank" rel="noopener noreferrer" href={data?.homepage} endIcon={<Language />}>Website</Button>
                     <Button target="_blank" rel="noopener noreferrer" href={`https://www.imdb.com/title/${data?.imdb_id}`} endIcon={<MovieIcon />}> IMDB </Button>
-                    <Button onClick={() => {}} href="#" endIcon={<Theaters />}>Trailer</Button>
+                    <Button onClick={() => setOpen(true)} href="#" endIcon={<Theaters />}>Trailer</Button>
                   </ButtonGroup>
                 </BtnsContainer>
                 <BtnsContainer item xs={12} sm={6}>
                   <ButtonGroup size="medium" variant="outlined">
-                    <Button onClick={addToFavorites} endIcon={isMovieFav ? <FavoriteBorderOutlined /> : <Favorite />}>
-                      {isMovieFav ? 'Unfavorite' : 'Favorite'}
+                    <Button onClick={addToFavorites} endIcon={isMovieFavorited ? <FavoriteBorderOutlined /> : <Favorite />}>
+                      {isMovieFavorited ? 'Unfavorite' : 'Favorite'}
                     </Button>
-                    <Button onClick={addToWatchlist} endIcon={isMovieWatch ? <Remove /> : <PlusOne />}>
+                    <Button onClick={addToWatchlist} endIcon={isMovieWatchListed ? <Remove /> : <PlusOne />}>
                       Wathclist
                     </Button>
                     <Button endIcon={<ArrowBack />} sx={{ borderColor: 'primary.main' }}>
-                      <Typography onClick={() => navigate('/')} color="inherit" variant="subtitle2">
+                      <Typography
+                        onClick={() => navigate('/')}
+                        color="inherit"
+                        variant="subtitle2"
+                      >
                         Back
                       </Typography>
                     </Button>
@@ -150,10 +201,30 @@ const MovieInformation = () => {
           </Grid>
           <Box marginTop="5rem" width="100%">
             <Typography variant="h3" gutterBottom align="center">You might also like</Typography>
-            {recommendations
-              ? <MovieList movies={recommendations} numberOfMovies={12} />
-              : <Box>Sorry nothing was found</Box> }
+            {
+              isRecommendationsFetching ? (
+                <Box display="flex" justifyContent="center" alignItems="center">
+                  <CircularProgress size="8rem" />
+                </Box>
+              )
+                : recommendations ? <MovieList movies={recommendations} numberOfMovies={12} />
+                  : <Box>Sorry nothing was found</Box>
+            }
           </Box>
+          <StyledModal
+            closeAfterTransition
+            open={open}
+            onClose={() => setOpen(false)}
+          >
+            {data?.videos?.results?.length > 0 && (
+            <VideoIframe
+              autoPlay
+              title="Trailer"
+              src={`https://www.youtube.com/embed/${data.videos.results[0].key}`}
+              allow="autoplay"
+            />
+            )}
+          </StyledModal>
         </GridContainer>
       ) : null }
     </div>

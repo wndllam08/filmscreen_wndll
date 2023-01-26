@@ -2,19 +2,22 @@ import React, { useState } from 'react';
 import { InputAdornment } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useDispatch } from 'react-redux';
-// import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Container, CssTextField } from './styles';
 import { searchMovie } from '../../features/currentGenreOrCategory';
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       dispatch(searchMovie(query));
     }
   };
+
+  if (location.pathname !== '/') return null;
   return (
     <Container>
       <CssTextField

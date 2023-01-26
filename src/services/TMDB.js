@@ -39,10 +39,15 @@ export const tmdbApi = createApi({
         return `movie/popular?page=${page}&api_key=${tmdbApiKey}`;
       },
     }),
+    //* Get Specific List
+    getList: builder.query({
+      query: ({ listName, accountId, sessionId, page }) => `/account/${accountId}/${listName}?api_key=${tmdbApiKey}&session_id=${sessionId}&page=${page}`,
+    }),
     //* Get singleMovie
     getMovie: builder.query({
       query: (id) => `movie/${id}?append_to_response=videos,credits&api_key=${tmdbApiKey}`,
     }),
+
     //* Get  User Specific List
     getRecommendations: builder.query({
       query: ({ movie_id, list }) => `/movie/${movie_id}/${list}?api_key=${tmdbApiKey}`,
@@ -64,4 +69,5 @@ export const {
   useGetRecommendationsQuery,
   useGetActorsDetailsQuery,
   useGetMoviesByActorQuery,
+  useGetListQuery,
 } = tmdbApi;
